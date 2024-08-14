@@ -13,6 +13,6 @@ class SplashProvider extends BaseProvider {
   void setContext(BuildContext context) {}
 
   Future<void> navigateToCreate() async {
-    await navigation.navigateToPageClear(path: NavigationConstants.BOARD_LIST);
+    await navigation.navigateToPageClear(path: NavigationConstants.CREATE_USER);
   }
 }

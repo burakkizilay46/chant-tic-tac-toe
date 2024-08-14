@@ -1,59 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/core/base/view/base_view.dart';
+import 'package:tic_tac_toe/features/board_list/provider/board_list_provider.dart';
 
 class BoardsScreen extends StatelessWidget {
   const BoardsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Yeni oyun eklemek için buraya tıklama işlevini ekleyin.
-        },
-        child: const Icon(Icons.add),
-      ),
-      appBar: AppBar(
-        title: const Text('Tic Tac Toe'),
-      ),
-      body: const BoardsListView(),
-    );
-  }
-}
-
-class BoardsListView extends StatelessWidget {
-  const BoardsListView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      itemCount: 10, // Örnek olarak 10 öğe listeleniyor.
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: BoardCard(index: index),
-        );
-      },
-    );
+    return BaseView(
+        provider: BoardListProvider(),
+        onProviderReady: (BoardListProvider provider) {},
+        onPageBuilder: (BoardListProvider provider) => Scaffold(
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => provider.navigateToCreateBoardPage(),
+                child: const Icon(Icons.add),
+              ),
+              appBar: AppBar(
+                title: const Text('Tic Tac Toe'),
+              ),
+              body: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                itemCount: 10, // Örnek olarak 10 öğe listeleniyor.
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                    child: BoardCard(
+                      index: index,
+                      provider: provider,
+                    ),
+                  );
+                },
+              ),
+            ));
   }
 }
 
 class BoardCard extends StatelessWidget {
+  final BoardListProvider provider;
   final int index;
 
-  const BoardCard({super.key, required this.index});
+  const BoardCard({super.key, required this.index, required this.provider});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 64,
-      child: Card(
-        elevation: 4.0,
-        margin: const EdgeInsets.only(top: 8),
-        child: Center(
-          child: Text(
-            'Board ${index + 1}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () => provider.navigateToGameBoard(),
+      child: SizedBox(
+        height: 64,
+        child: Card(
+          elevation: 4.0,
+          margin: const EdgeInsets.only(top: 8),
+          child: Center(
+            child: Text(
+              'Board ${index + 1}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),

@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
         provider.setContext(context);
         provider.init();
       },
-      onPageBuilder: (SplashProvider provider) => Scaffold(
+      onPageBuilder: (SplashProvider provider) => const Scaffold(
         body: Center(
           child: Text('Welcome tic tac toe'),
         ),
