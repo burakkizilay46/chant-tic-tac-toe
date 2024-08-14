@@ -4,7 +4,7 @@ class AppStateManager {
     return _instance ??= AppStateManager.init();
   }
 
-  String accessToken = '';
+  String currentUser = '';
 
   AppStateManager.init();
 }

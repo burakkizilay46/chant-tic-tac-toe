@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/core/base/view/base_view.dart';
 import 'package:tic_tac_toe/features/board_list/provider/board_list_provider.dart';
 
@@ -9,7 +10,10 @@ class BoardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView(
         provider: BoardListProvider(),
-        onProviderReady: (BoardListProvider provider) {},
+        onProviderReady: (BoardListProvider provider) {
+          provider.setContext(context);
+          provider.init();
+        },
         onPageBuilder: (BoardListProvider provider) => Scaffold(
               floatingActionButton: FloatingActionButton(
                 onPressed: () => provider.navigateToCreateBoardPage(),
@@ -18,19 +22,21 @@ class BoardsScreen extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Tic Tac Toe'),
               ),
-              body: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                itemCount: 10, // Örnek olarak 10 öğe listeleniyor.
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-                    child: BoardCard(
-                      index: index,
-                      provider: provider,
-                    ),
-                  );
-                },
-              ),
+              body: Consumer<BoardListProvider>(builder: (context, value, child) {
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  itemCount: provider.boards.length, // Örnek olarak 10 öğe listeleniyor.
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                      child: BoardCard(
+                        index: index,
+                        provider: provider,
+                      ),
+                    );
+                  },
+                );
+              }),
             ));
   }
 }
@@ -52,7 +58,7 @@ class BoardCard extends StatelessWidget {
           margin: const EdgeInsets.only(top: 8),
           child: Center(
             child: Text(
-              'Board ${index + 1}',
+              provider.boards[index]['settings']['gameName'],
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),

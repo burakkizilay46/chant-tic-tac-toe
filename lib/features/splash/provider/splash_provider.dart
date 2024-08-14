@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/core/base/provider/base_provider.dart';
 import 'package:tic_tac_toe/core/constants/enums/shared_prefs_keys.dart';
 import 'package:tic_tac_toe/core/constants/navigation/navigation_constants.dart';
+import 'package:tic_tac_toe/core/init/app_state/app_state.dart';
 import 'package:tic_tac_toe/core/init/cache/shared_prefs_manager.dart';
 
 class SplashProvider extends BaseProvider {
@@ -18,6 +19,10 @@ class SplashProvider extends BaseProvider {
   Future<void> navigateToCreate() async {
     // Kullanıcının giriş durumu kontrol ediliyor
     bool? isLogged = await sharedPrefManager.getBoolValue(SharedPrefKeys.ISLOGGED);
+
+    AppStateManager.instance.currentUser = await sharedPrefManager.getStringValue(SharedPrefKeys.USER) ?? '';
+
+    print(sharedPrefManager.getStringValue(SharedPrefKeys.USER));
 
     // Eğer giriş durumu null ise, varsayılan olarak false olarak ayarlanıyor
     if (isLogged == null) {

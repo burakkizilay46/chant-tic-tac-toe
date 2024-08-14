@@ -4,13 +4,23 @@ import 'package:tic_tac_toe/core/constants/navigation/navigation_constants.dart'
 
 class BoardListProvider extends BaseProvider {
   @override
-  void init() {
+  void init() async {
     // TODO: implement init
+    await getBoards();
   }
 
   @override
   void setContext(BuildContext context) {
     // TODO: implement setContext
+  }
+
+  List<Map<String, dynamic>> _boards = [];
+  List<Map<String, dynamic>> get boards => _boards;
+
+  Future getBoards() async {
+    _boards = await firebaseService.getDataFromCollection('boards');
+    print("🚀 ~ BoardListProvider ~ FuturegetBoards ~ _boards:" + _boards.toString());
+    notifyListeners();
   }
 
   void navigateToCreateBoardPage() {
