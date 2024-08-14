@@ -5,7 +5,14 @@ import 'package:tic_tac_toe/features/splash/provider/splash_provider.dart';
 import 'package:tic_tac_toe/features/splash/view/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<SplashProvider>(create: (context) => SplashProvider()),
