@@ -7,6 +7,7 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _controller = TextEditingController();
     return BaseView(
         provider: UserCreateProvider(),
         onProviderReady: (UserCreateProvider provider) {
@@ -21,8 +22,9 @@ class UserScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: _controller,
+                        decoration: const InputDecoration(
                           labelText: 'Enter your username',
                           hintText: 'John Doe',
                         ),
@@ -30,7 +32,11 @@ class UserScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: ElevatedButton(
-                            onPressed: () => provider.navigateToBoardsScreen(), child: const Text('Next')),
+                            onPressed: () async {
+                              provider.createUser(_controller.text);
+                              _controller.clear();
+                            },
+                            child: const Text('Next')),
                       )
                     ],
                   ),
