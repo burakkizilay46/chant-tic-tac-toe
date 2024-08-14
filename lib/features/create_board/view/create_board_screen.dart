@@ -106,10 +106,7 @@ class _CreateBoardScreenState extends State<CreateBoardScreen> {
       return;
     }
 
-    final boardSettings = {
-      'gameName': gameName,
-      'boardColor': provider.selectedColor.toString(),
-    };
+    final boardSettings = {'gameName': gameName, 'boardColor': provider.selectedColor.value};
 
     provider.createBoard(boardSettings, []);
 

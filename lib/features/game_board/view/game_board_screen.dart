@@ -3,7 +3,8 @@ import 'package:tic_tac_toe/core/base/view/base_view.dart';
 import 'package:tic_tac_toe/features/game_board/provider/game_provider.dart';
 
 class GameBoardScreen extends StatefulWidget {
-  const GameBoardScreen({super.key});
+  final Map<String, dynamic> selectedBoard;
+  const GameBoardScreen({super.key, required this.selectedBoard});
 
   @override
   _GameBoardScreenState createState() => _GameBoardScreenState();
@@ -20,8 +21,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
         provider: GameProvider(),
         onProviderReady: (GameProvider provider) {},
         onPageBuilder: (GameProvider provider) => Scaffold(
+              backgroundColor: Color(widget.selectedBoard['settings']['boardColor']),
               appBar: AppBar(
-                title: const Text('Tic Tac Toe'),
+                title: Text(widget.selectedBoard['settings']['gameName']),
               ),
               body: Padding(
                 padding: const EdgeInsets.all(16.0),

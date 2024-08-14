@@ -19,7 +19,6 @@ class BoardListProvider extends BaseProvider {
 
   Future getBoards() async {
     _boards = await firebaseService.getDataFromCollection('boards');
-    print("🚀 ~ BoardListProvider ~ FuturegetBoards ~ _boards:" + _boards.toString());
     notifyListeners();
   }
 
@@ -27,7 +26,7 @@ class BoardListProvider extends BaseProvider {
     navigation.navigateToPage(path: NavigationConstants.CREATE_BOARD);
   }
 
-  void navigateToGameBoard() {
-    navigation.navigateToPage(path: NavigationConstants.GAME_BOARD);
+  void navigateToGameBoard(Map<String, dynamic> board) {
+    navigation.navigateToPage(path: NavigationConstants.GAME_BOARD, data: board);
   }
 }

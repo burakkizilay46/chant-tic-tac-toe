@@ -50,7 +50,7 @@ class BoardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => provider.navigateToGameBoard(),
+      onTap: () => provider.navigateToGameBoard(provider.boards[index]),
       child: SizedBox(
         height: 64,
         child: Card(
