@@ -18,20 +18,20 @@ class SplashProvider extends BaseProvider {
 
   Future<void> navigateToCreate() async {
     // Kullanıcının giriş durumu kontrol ediliyor
+    // Kullanıcının giriş durumu kontrol ediliyor
     bool? isLogged = await sharedPrefManager.getBoolValue(SharedPrefKeys.ISLOGGED);
 
-    AppStateManager.instance.currentUser = await sharedPrefManager.getStringValue(SharedPrefKeys.USER) ?? '';
+// Kullanıcı adını al
+    String? user = await sharedPrefManager.getStringValue(SharedPrefKeys.USER);
 
-    print(sharedPrefManager.getStringValue(SharedPrefKeys.USER));
-
-    // Eğer giriş durumu null ise, varsayılan olarak false olarak ayarlanıyor
+// Eğer isLogged null ise, varsayılan olarak false ayarlanıyor
     if (isLogged == null) {
-      await SharedPrefsManager.instance.setBoolValue(SharedPrefKeys.ISLOGGED, value: false);
+      await sharedPrefManager.setBoolValue(SharedPrefKeys.ISLOGGED, value: false);
       isLogged = false;
     }
 
-    // Giriş durumuna göre navigasyon işlemi yapılıyor
-    if (isLogged) {
+    if (isLogged && user != null && user.isNotEmpty) {
+      AppStateManager.instance.currentUser = await sharedPrefManager.getStringValue(SharedPrefKeys.USER) ?? '';
       navigation.navigateToPageClear(path: NavigationConstants.BOARD_LIST);
     } else {
       await navigation.navigateToPageClear(path: NavigationConstants.CREATE_USER);

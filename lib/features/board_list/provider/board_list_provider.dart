@@ -7,6 +7,7 @@ class BoardListProvider extends BaseProvider {
   void init() async {
     // TODO: implement init
     await getBoards();
+    print(appStateManager.currentUser);
   }
 
   @override

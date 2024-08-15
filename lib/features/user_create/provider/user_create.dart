@@ -14,15 +14,14 @@ class UserCreateProvider extends BaseProvider {
   }
 
   void createUser(String username) async {
-    await firebaseService.addDataToCollection("users", {"name": username}).then((value) => setUser(username));
+    await firebaseService.addDataToCollection("users", {"name": username});
+    setUser(username);
   }
 
   Future<void> setUser(String user) async {
-    // Kullanıcı bilgisini kaydet
     await SharedPrefsManager.instance.setStringValue(SharedPrefKeys.USER, user);
-
-    // Kullanıcı giriş yapmış olarak işaretle
     await SharedPrefsManager.instance.setBoolValue(SharedPrefKeys.ISLOGGED, value: true);
+    navigateToBoardsScreen();
   }
 
   Future<void> navigateToBoardsScreen() async {

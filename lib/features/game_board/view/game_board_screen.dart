@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:tic_tac_toe/core/base/view/base_view.dart';
 import 'package:tic_tac_toe/features/game_board/provider/game_provider.dart';
 
@@ -32,7 +33,10 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
+                    Visibility(
+                        visible: !provider.haveOPlayer,
+                        child: ElevatedButton(onPressed: () => provider.joinGame(), child: const Text('Join Game'))),
                     Text(
                       _statusMessage,
                       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -40,19 +44,6 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                     const SizedBox(height: 16),
                     _buildBoard(provider),
                     const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Restart Game',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -113,40 +104,5 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       [0, 4, 8],
       [2, 4, 6],
     ];
-
-    for (var combo in winningCombinations) {
-      String a = provider.board['board'][combo[0]];
-      String b = provider.board['board'][combo[1]];
-      String c = provider.board['board'][combo[2]];
-
-      if (a.isNotEmpty && a == b && a == c) {
-        _showWinnerDialog(a);
-        return;
-      }
-    }
-
-    if (!provider.board['board'].contains('')) {
-      _showWinnerDialog('Draw');
-    }
-  }
-
-  void _showWinnerDialog(String winner) {
-    String message = winner == 'Draw' ? 'It\'s a Draw!' : '$winner Wins!';
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Restart'),
-          ),
-        ],
-      ),
-    );
   }
 }
