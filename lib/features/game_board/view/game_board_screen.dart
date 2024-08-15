@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/core/base/view/base_view.dart';
 import 'package:tic_tac_toe/features/game_board/provider/game_provider.dart';
 
@@ -64,28 +64,30 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   }
 
   Widget _buildTile(int index, GameProvider provider) {
-    return GestureDetector(
-      onTap: () {
-        _onTileTapped(index, provider);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 1),
-        ),
-        child: Center(
-          child: Text(
-            provider.board['board'][index],
-            style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+    return Consumer<GameProvider>(builder: (context, value, child) {
+      return GestureDetector(
+        onTap: () {
+          _onTileTapped(index, value);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1),
+          ),
+          child: Center(
+            child: Text(
+              value.board['board'][index],
+              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   void _onTileTapped(int index, GameProvider provider) {
     if (provider.board['board'][index].isEmpty) {
       setState(() {
-        provider.tapTile(index, _isXTurn);
+        provider.onTileTap(index);
         _isXTurn = !_isXTurn;
         _statusMessage = _isXTurn ? 'X\'s Turn' : 'O\'s Turn';
       });
