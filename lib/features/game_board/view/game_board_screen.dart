@@ -11,7 +11,6 @@ class GameBoardScreen extends StatefulWidget {
 }
 
 class _GameBoardScreenState extends State<GameBoardScreen> {
-  List<String> _board = List.filled(9, '');
   bool _isXTurn = true;
   String _statusMessage = 'X\'s Turn';
 
@@ -19,11 +18,15 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
   Widget build(BuildContext context) {
     return BaseView(
         provider: GameProvider(),
-        onProviderReady: (GameProvider provider) {},
+        onProviderReady: (GameProvider provider) {
+          provider.setContext(context);
+          provider.init();
+          provider.initBoard(widget.selectedBoard);
+        },
         onPageBuilder: (GameProvider provider) => Scaffold(
-              backgroundColor: Color(widget.selectedBoard['settings']['boardColor']),
+              backgroundColor: Color(provider.board['settings']['boardColor']),
               appBar: AppBar(
-                title: Text(widget.selectedBoard['settings']['gameName']),
+                title: Text(provider.board['settings']['gameName']),
               ),
               body: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -35,10 +38,10 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
                       style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    _buildBoard(),
+                    _buildBoard(provider),
                     const SizedBox(height: 24),
                     ElevatedButton(
-                      onPressed: _resetGame,
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
                         shape: RoundedRectangleBorder(
@@ -56,23 +59,23 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
             ));
   }
 
-  Widget _buildBoard() {
+  Widget _buildBoard(GameProvider provider) {
     return AspectRatio(
       aspectRatio: 1,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemCount: 9,
         itemBuilder: (context, index) {
-          return _buildTile(index);
+          return _buildTile(index, provider);
         },
       ),
     );
   }
 
-  Widget _buildTile(int index) {
+  Widget _buildTile(int index, GameProvider provider) {
     return GestureDetector(
       onTap: () {
-        _onTileTapped(index);
+        _onTileTapped(index, provider);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -80,7 +83,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
         ),
         child: Center(
           child: Text(
-            _board[index],
+            provider.board['board'][index],
             style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
           ),
         ),
@@ -88,18 +91,18 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     );
   }
 
-  void _onTileTapped(int index) {
-    if (_board[index].isEmpty) {
+  void _onTileTapped(int index, GameProvider provider) {
+    if (provider.board['board'][index].isEmpty) {
       setState(() {
-        _board[index] = _isXTurn ? 'X' : 'O';
+        provider.tapTile(index, _isXTurn);
         _isXTurn = !_isXTurn;
         _statusMessage = _isXTurn ? 'X\'s Turn' : 'O\'s Turn';
       });
-      _checkWinner();
+      _checkWinner(provider);
     }
   }
 
-  void _checkWinner() {
+  void _checkWinner(GameProvider provider) {
     const List<List<int>> winningCombinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -112,9 +115,9 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
     ];
 
     for (var combo in winningCombinations) {
-      String a = _board[combo[0]];
-      String b = _board[combo[1]];
-      String c = _board[combo[2]];
+      String a = provider.board['board'][combo[0]];
+      String b = provider.board['board'][combo[1]];
+      String c = provider.board['board'][combo[2]];
 
       if (a.isNotEmpty && a == b && a == c) {
         _showWinnerDialog(a);
@@ -122,7 +125,7 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
       }
     }
 
-    if (!_board.contains('')) {
+    if (!provider.board['board'].contains('')) {
       _showWinnerDialog('Draw');
     }
   }
@@ -139,20 +142,11 @@ class _GameBoardScreenState extends State<GameBoardScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _resetGame();
             },
             child: const Text('Restart'),
           ),
         ],
       ),
     );
-  }
-
-  void _resetGame() {
-    setState(() {
-      _board = List.filled(9, '');
-      _isXTurn = true;
-      _statusMessage = 'X\'s Turn';
-    });
   }
 }

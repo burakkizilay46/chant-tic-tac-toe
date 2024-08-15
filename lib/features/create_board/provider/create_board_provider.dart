@@ -20,6 +20,8 @@ class CreateBoardProvider extends BaseProvider {
     notifyListeners();
 
     FirebaseService().addDataToCollection('boards', {
+      'turn': 'GamerType X',
+      'board': List.filled(9, ''),
       'settings': _boardSettings,
       'players': [_currentPlayer]
     }).then((value) => navigation.pop());

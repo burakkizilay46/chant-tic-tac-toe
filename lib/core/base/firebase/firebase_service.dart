@@ -7,7 +7,12 @@ class FirebaseService {
   Future<List<Map<String, dynamic>>> getDataFromCollection(String collectionName) async {
     try {
       QuerySnapshot querySnapshot = await _firestore.collection(collectionName).get();
-      List<Map<String, dynamic>> data = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      List<Map<String, dynamic>> data = querySnapshot.docs.map((doc) {
+        // documentId'yi verinin içine ekleme
+        Map<String, dynamic> docData = doc.data() as Map<String, dynamic>;
+        docData['documentId'] = doc.id;
+        return docData;
+      }).toList();
       return data;
     } catch (e) {
       print("Error fetching data: $e");
